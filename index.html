@@ -7,50 +7,50 @@
 <style>
   :root {
     --navy: #1b2a4a;
-    --navy-2: #243656;
-    --ink: #1a1f2b;
-    --cream: #f7f4ee;
-    --card: #fffcf7;
     --gold: #a6843d;
     --gold-2: #f3e6c8;
-    --muted: #5c6573;
-    --line: #e6ddd0;
+    --cream: #f7f4ee;
   }
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
   body {
     margin: 0;
-    color: var(--ink);
-    background: var(--cream);
-    font-family: Calibri, "Segoe UI", sans-serif;
-    font-size: 18px;
-    line-height: 1.6;
-    overflow-x: clip;
-  }
-  a { color: inherit; }
-  h1, h2, h3 { font-family: Georgia, "Palatino Linotype", serif; font-weight: normal; color: var(--navy); }
-  .top {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    display: flex;
-    align-items: center;
-    gap: 28px;
-    min-height: 74px;
-    padding: 12px 40px;
-    background: rgba(255, 252, 247, 0.96);
-    border-bottom: 3px solid var(--gold);
-    backdrop-filter: blur(8px);
-  }
-  .brand {
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    color: white;
+    background: var(--navy);
+    font-family: Calibri, "Segoe UI", sans-serif;
+  }
+  h1 { font-family: Georgia, "Palatino Linotype", serif; font-weight: normal; }
+  a { color: inherit; }
+  .banner {
+    position: relative;
+    flex: 1 0 auto;
+    min-height: 78vh;
+    display: flex;
+    flex-direction: column;
+    background: #152238 url("banner.jpg") center 30% / cover no-repeat;
+  }
+  .banner:before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(21, 34, 56, 0.88) 0%, rgba(21, 34, 56, 0.55) 46%, rgba(21, 34, 56, 0.18) 100%);
+  }
+  .top, .hero { position: relative; z-index: 1; }
+  .top {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 22px 40px;
+  }
+  .brand {
     text-decoration: none;
     line-height: 1.15;
-    flex: 0 0 auto;
   }
   .brand small {
-    color: var(--gold);
+    display: block;
+    color: var(--gold-2);
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.14em;
@@ -59,339 +59,112 @@
     font-family: Georgia, "Palatino Linotype", serif;
     font-size: 20px;
     font-weight: normal;
-    color: var(--navy);
   }
   .menu {
+    margin-left: auto;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-left: auto;
-    min-width: 0;
+    gap: 8px;
   }
   .menu a {
     text-decoration: none;
-    color: var(--navy);
+    color: white;
     font-size: 15px;
     padding: 8px 12px;
-    border-radius: 999px;
   }
-  .menu a:hover { background: var(--gold-2); }
-  .menu a.go {
-    background: var(--navy);
-    color: white;
-    padding: 9px 16px;
-    margin-left: 8px;
+  .menu a:hover { color: var(--gold-2); }
+  .hero {
+    margin-top: auto;
+    max-width: 720px;
+    padding: 48px 40px 72px;
   }
-  .menu a.go:hover { background: var(--navy-2); }
-  .banner {
-    position: relative;
-    color: white;
-    background:
-      radial-gradient(900px 420px at 88% 0%, rgba(166, 132, 61, 0.38), transparent 60%),
-      linear-gradient(155deg, #1b2a4a 0%, #243656 58%, #152238 100%);
-  }
-  .banner:after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 8px;
-    background: linear-gradient(90deg, var(--gold), #e7d7ae 40%, var(--gold));
-  }
-  .banner-inner {
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 72px 40px 80px;
-    display: grid;
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.8fr);
-    gap: 48px;
-    align-items: end;
-  }
-  .kicker {
-    margin: 0 0 14px;
-    color: var(--gold-2);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-  }
-  .banner h1 {
-    margin: 0 0 16px;
-    color: white;
-    font-size: 64px;
-    line-height: 1.02;
+  .hero h1 {
+    margin: 0 0 22px;
+    font-size: 52px;
+    line-height: 1.12;
     letter-spacing: -0.02em;
-    text-wrap: balance;
   }
-  .banner .lead {
-    margin: 0 0 28px;
-    max-width: 38rem;
-    font-size: 20px;
-    line-height: 1.55;
-    color: #e7edf6;
-  }
-  .actions { display: flex; flex-wrap: wrap; gap: 12px; max-width: 100%; }
   .btn {
     display: inline-block;
     text-decoration: none;
     background: var(--gold);
     color: var(--navy);
     font-weight: 700;
-    padding: 12px 18px;
-    max-width: 100%;
-  }
-  .btn.ghost {
-    background: transparent;
-    color: white;
-    border: 1px solid rgba(243, 230, 200, 0.7);
-    font-weight: 400;
-  }
-  .banner-card {
-    background: rgba(255, 252, 247, 0.08);
-    border: 1px solid rgba(243, 230, 200, 0.35);
-    padding: 26px 26px 18px;
-  }
-  .banner-card p {
-    margin: 0 0 16px;
-    color: #e7edf6;
-    font-size: 16px;
-  }
-  .banner-card strong {
-    display: block;
-    color: var(--gold-2);
-    font-family: Georgia, "Palatino Linotype", serif;
-    font-size: 22px;
-    font-weight: normal;
-    margin-bottom: 4px;
-  }
-  main { max-width: 1120px; margin: 0 auto; padding: 56px 40px 24px; }
-  .section-kicker {
-    margin: 0 0 8px;
-    color: var(--gold);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-  }
-  h2 { font-size: 36px; margin: 0 0 22px; line-height: 1.2; text-wrap: balance; }
-  .about {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 18px;
-    margin-bottom: 56px;
-  }
-  .card {
-    background: var(--card);
-    border: 1px solid var(--line);
-    padding: 26px 24px 22px;
-    box-shadow: 0 12px 28px rgba(27, 42, 74, 0.05);
-  }
-  .card h3 { margin: 0 0 10px; font-size: 24px; line-height: 1.25; text-wrap: balance; }
-  .card p { margin: 0; font-size: 16.5px; line-height: 1.6; }
-  .steps {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
-    margin: 0 0 56px;
-  }
-  .step {
-    background: var(--navy);
-    color: #e7edf6;
-    padding: 20px 18px 16px;
-  }
-  .step span {
-    display: block;
-    color: var(--gold-2);
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-  .step h3 { color: white; margin: 0 0 8px; font-size: 20px; }
-  .step p { margin: 0; font-size: 15px; line-height: 1.45; }
-  .topics {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 14px;
-    margin: 0 0 48px;
-  }
-  .topic {
-    display: block;
-    text-decoration: none;
-    background: var(--card);
-    border: 1px solid var(--line);
-    padding: 16px 16px 14px;
-    min-height: 104px;
-  }
-  .topic:hover { border-color: var(--navy); }
-  .topic em {
-    display: block;
-    font-style: normal;
-    color: var(--gold);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    margin-bottom: 6px;
-  }
-  .topic strong {
-    display: block;
-    font-family: Georgia, "Palatino Linotype", serif;
-    font-weight: normal;
-    font-size: 18px;
-    line-height: 1.3;
-    color: var(--navy);
+    padding: 13px 20px;
   }
   .foot {
-    margin-top: 20px;
     background: var(--navy);
     color: #d5deec;
   }
   .foot-inner {
     max-width: 1120px;
     margin: 0 auto;
-    padding: 36px 40px 28px;
-    display: grid;
-    grid-template-columns: 1.4fr 0.8fr;
-    gap: 28px;
+    padding: 28px 40px 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    align-items: end;
   }
-  .foot h2 { color: white; font-size: 26px; margin: 0 0 8px; }
-  .foot p { margin: 0 0 10px; font-size: 15px; line-height: 1.5; }
-  .foot a { color: var(--gold-2); }
-  .foot nav { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
-  .foot nav a { text-decoration: none; font-size: 16px; }
-  .foot nav a:hover { text-decoration: underline; }
+  .foot h2 {
+    margin: 0 0 6px;
+    color: white;
+    font-family: Georgia, "Palatino Linotype", serif;
+    font-weight: normal;
+    font-size: 22px;
+  }
+  .foot p { margin: 0; font-size: 14px; line-height: 1.45; max-width: 40rem; }
+  .foot nav { display: flex; gap: 18px; }
+  .foot a { color: var(--gold-2); text-decoration: none; }
+  .foot a:hover { text-decoration: underline; }
   .legal {
-    border-top: 1px solid #314566;
     max-width: 1120px;
     margin: 0 auto;
-    padding: 14px 40px 22px;
-    font-size: 13px;
+    padding: 12px 40px 18px;
+    border-top: 1px solid #314566;
     color: #9eacc4;
+    font-size: 13px;
   }
-  @media (max-width: 980px) {
-    .banner-inner, .about, .steps, .topics, .foot-inner { grid-template-columns: 1fr 1fr; }
-    .banner h1 { font-size: 48px; }
-  }
-  @media (max-width: 760px) {
-    .top { display: block; padding: 12px 16px 10px; }
-    .brand { min-width: 0; }
-    .menu {
-      display: block;
-      width: auto;
-      max-width: 100%;
-      margin: 8px 0 0;
-      text-align: right;
+  @media (max-width: 700px) {
+    .banner:before {
+      background: linear-gradient(180deg, rgba(21, 34, 56, 0.55) 0%, rgba(21, 34, 56, 0.82) 70%);
     }
-    .menu a { display: inline-block; padding: 8px 10px; margin: 2px 0 2px 4px; }
-    .menu a.go { margin-left: 4px; }
-    .banner-inner, .about, .steps, .topics, .foot-inner { grid-template-columns: minmax(0, 1fr); }
-    .banner-inner, main, .foot-inner, .legal { padding-left: 16px; padding-right: 16px; }
-    .banner-inner { padding-top: 36px; padding-bottom: 44px; }
-    .banner h1 { font-size: 38px; }
-    .kicker, .brand small { letter-spacing: 0.06em; }
-    .actions { flex-direction: column; align-items: flex-start; }
-    .lead, .card p, .banner-card p, .step p { overflow-wrap: break-word; }
-    main { padding-top: 32px; }
+    .top, .hero, .foot-inner, .legal { padding-left: 16px; padding-right: 16px; }
+    .top { flex-wrap: wrap; }
+    .menu { width: 100%; justify-content: flex-end; }
+    .hero h1 { font-size: 36px; }
+    .foot-inner { flex-direction: column; align-items: flex-start; }
   }
 </style>
 </head>
-<body id="top">
-<header class="top">
-  <a class="brand" href="#top">
-    <small>PREVENTION OF SEXUAL HARASSMENT</small>
-    <strong>POSH Training Centre</strong>
-  </a>
-  <nav class="menu" aria-label="Page">
-    <a href="#about">About</a>
-    <a href="#topics">Topics</a>
-    <a href="POSH-Law-One-Pager.pdf">The law</a>
-    <a class="go" href="POSH-Training-Course.html">Start training</a>
-  </nav>
-</header>
-
-<section class="banner" aria-label="Banner">
-  <div class="banner-inner">
-    <div>
-      <p class="kicker">SEXUAL HARASSMENT OF WOMEN AT WORKPLACE ACT, 2013</p>
-      <h1>A workplace course on the 2013 Act</h1>
-      <p class="lead">POSH is the short name for the prevention of sexual harassment of women at the workplace. This course sets out the law, the examples, and the path to the Internal Committee.</p>
-      <div class="actions">
-        <a class="btn" href="POSH-Training-Course.html">Start the training</a>
-        <a class="btn ghost" href="POSH-Law-One-Pager.pdf">Read the law on one page</a>
-      </div>
-    </div>
-    <aside class="banner-card">
-      <p><strong>Fifteen topics</strong>Each one explains the concept, sets out examples, and works through a case.</p>
-      <p><strong>Then four questions</strong>Three correct answers pass the topic. Any topic can be opened.</p>
-      <p><strong>A named certificate</strong>It is generated only after every topic is passed, in this browser.</p>
-    </aside>
+<body>
+<section class="banner">
+  <header class="top">
+    <a class="brand" href="index.html">
+      <small>POSH</small>
+      <strong>Training Centre</strong>
+    </a>
+    <nav class="menu" aria-label="Page">
+      <a href="POSH-Law-One-Pager.pdf">The law</a>
+      <a href="POSH-Training-Course.html">Start training</a>
+    </nav>
+  </header>
+  <div class="hero">
+    <h1>Prevention of sexual harassment at the workplace.</h1>
+    <a class="btn" href="POSH-Training-Course.html">Start training</a>
   </div>
 </section>
-
-<main>
-  <p class="section-kicker" id="about">ABOUT THIS TRAINING</p>
-  <h2>What the course covers</h2>
-  <div class="about">
-    <article class="card">
-      <h3>What POSH is</h3>
-      <p>The law is the Sexual Harassment of Women at Workplace (Prevention, Prohibition and Redressal) Act, 2013, and the Rules made under it. Section 2(n) defines sexual harassment as any unwelcome act or behaviour of a sexual nature, directly or by implication. That includes physical contact and advances, a demand or request for a sexual favour, a sexually coloured remark, showing pornography, and other unwelcome physical, verbal, or non-verbal conduct of a sexual nature.</p>
-    </article>
-    <article class="card">
-      <h3>Why it applies</h3>
-      <p>The Act applies to every workplace in India. A workplace includes the office, a place visited because of the work, and transport provided for that work. It covers a woman of any age, whether or not she is on the rolls. Employee is defined widely and includes a trainee, an apprentice, a contract worker, and a volunteer. Where there are ten or more workers, the employer must constitute an Internal Committee. Where there are fewer than ten, the Local Committee is the forum.</p>
-    </article>
-    <article class="card">
-      <h3>Why everyone should take it</h3>
-      <p>Any person at the workplace may meet this conduct, witness it, or be asked about it. The training sets out what unwelcome conduct is, what may amount to sexual harassment and what may not, how a complaint is made, what the Internal Committee does, and what must stay confidential. A manager, a colleague, and a person who may support a complainant need the same understanding.</p>
-    </article>
-  </div>
-
-  <p class="section-kicker">HOW A TOPIC RUNS</p>
-  <h2>Read, compare, then answer</h2>
-  <div class="steps">
-    <article class="step"><span>01</span><h3>The concept</h3><p>The legal idea, in plain words, before any example.</p></article>
-    <article class="step"><span>02</span><h3>The examples</h3><p>Conduct that may amount to sexual harassment, set beside conduct that may not.</p></article>
-    <article class="step"><span>03</span><h3>A case</h3><p>A short set of facts, and what the Act asks the reader to notice.</p></article>
-    <article class="step"><span>04</span><h3>The questions</h3><p>Four questions. The certificate waits until every topic is passed.</p></article>
-  </div>
-
-  <p class="section-kicker" id="topics">THE FIFTEEN TOPICS</p>
-  <h2>Open the training and choose a topic</h2>
-  <div class="topics">
-    <a class="topic" href="POSH-Training-Course.html"><em>TOPIC 01</em><strong>Understanding ‘Unwelcome’ Behaviour</strong></a>
-    <a class="topic" href="POSH-Training-Course.html"><em>TOPIC 02</em><strong>Sexual Harassment: Physical vs. Virtual</strong></a>
-    <a class="topic" href="POSH-Training-Course.html"><em>TOPIC 03</em><strong>What May Constitute Sexual Harassment?</strong></a>
-    <a class="topic" href="POSH-Training-Course.html"><em>TOPIC 04</em><strong>Understanding Quid Pro Quo and Hostile Work Environment</strong></a>
-    <a class="topic" href="POSH-Training-Course.html"><em>TOPIC 05</em><strong>Understanding Key Terms</strong></a>
-    <a class="topic" href="POSH-Training-Course.html"><em>TOPIC 06</em><strong>Internal Committee (IC)</strong></a>
-    <a class="topic" href="POSH-Training-Course.html"><em>TOPIC 07</em><strong>Complaint Filing and Redressal Mechanism</strong></a>
-    <a class="topic" href="POSH-Training-Course.html"><em>TOPIC 08</em><strong>Consequences of Malicious Complaints</strong></a>
-    <a class="topic" href="POSH-Training-Course.html"><em>TOPIC 09</em><strong>Importance of Confidentiality</strong></a>
-    <a class="topic" href="POSH-Training-Course.html"><em>TOPIC 10</em><strong>Bystander Intervention</strong></a>
-    <a class="topic" href="POSH-Training-Course.html"><em>TOPIC 11</em><strong>Organisational Vision, Values and Mission</strong></a>
-    <a class="topic" href="POSH-Training-Course.html"><em>TOPIC 12</em><strong>Purpose of the POSH Act and Organisational Policy</strong></a>
-    <a class="topic" href="POSH-Training-Course.html"><em>TOPIC 13</em><strong>Rights and Duties of Employees</strong></a>
-    <a class="topic" href="POSH-Training-Course.html"><em>TOPIC 14</em><strong>Harassment Outside the Physical Workplace</strong></a>
-    <a class="topic" href="POSH-Training-Course.html"><em>TOPIC 15</em><strong>Preventive Measures and Workplace Conduct</strong></a>
-  </div>
-</main>
-
 <footer class="foot">
   <div class="foot-inner">
     <div>
       <h2>POSH Training Centre</h2>
-      <p>Prevention of sexual harassment at the workplace. Awareness material based on the Sexual Harassment of Women at Workplace (Prevention, Prohibition and Redressal) Act, 2013, and the Rules, 2013.</p>
-      <p>Progress and the certificate stay in the browser used for the training. This page is for reading the course before it is final.</p>
+      <p>A workplace course on the Sexual Harassment of Women at Workplace Act, 2013.</p>
     </div>
     <nav aria-label="Footer">
-      <a href="POSH-Training-Course.html">Start the training</a>
-      <a href="POSH-Law-One-Pager.pdf">The law on one page</a>
-      <a href="#topics">The fifteen topics</a>
-      <a href="#top">Back to the top</a>
+      <a href="POSH-Training-Course.html">Start training</a>
+      <a href="POSH-Law-One-Pager.pdf">The law</a>
     </nav>
   </div>
-  <p class="legal">Training material, not legal advice. The Internal Committee decides on the full facts.</p>
+  <p class="legal">Training material, not legal advice.</p>
 </footer>
 </body>
 </html>
