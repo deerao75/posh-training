@@ -288,7 +288,7 @@ const PASS = COURSE.passNeed;
 const ASK = COURSE.askCount;
 
 let state = load();
-let view = { name: "home" };
+let view = location.hash === "#register" ? { name: "profile" } : { name: "home" };
 let quiz = null;
 
 function load() {
