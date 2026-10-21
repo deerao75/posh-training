@@ -61,15 +61,38 @@
   }
   .menu a:hover { color: var(--gold-2); }
   .banner {
+    position: relative;
     flex: 1 0 auto;
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.85fr);
-    gap: 48px;
+    min-height: 640px;
+    display: flex;
     align-items: center;
-    max-width: 1120px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 56px 48px 64px;
+    overflow: hidden;
+    background: var(--cream);
+  }
+  .wash {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 78%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 22%;
+    -webkit-mask-image:
+      linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.55) 16%, #000 46%),
+      linear-gradient(180deg, transparent 0%, #000 8%, #000 84%, transparent 100%);
+    mask-image:
+      linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.55) 16%, #000 46%),
+      linear-gradient(180deg, transparent 0%, #000 8%, #000 84%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+    pointer-events: none;
+  }
+  .hero {
+    position: relative;
+    z-index: 1;
+    max-width: 560px;
+    padding: 72px 8px 72px 48px;
+    margin-left: max(48px, calc((100% - 1120px) / 2));
   }
   .hero h1 {
     margin: 0 0 28px;
@@ -85,20 +108,6 @@
     font-weight: 700;
     font-size: 20px;
     padding: 14px 22px;
-  }
-  .frame {
-    margin: 0;
-    height: 340px;
-    overflow: hidden;
-    border-radius: 6px;
-    box-shadow: 0 16px 36px rgba(27, 42, 74, 0.12);
-  }
-  .frame img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 22%;
   }
   .foot {
     background: var(--navy);
@@ -131,14 +140,21 @@
     font-size: 18px;
   }
   @media (max-width: 800px) {
-    .top, .banner, .foot-inner, .legal { padding-left: 20px; padding-right: 20px; }
+    .top, .foot-inner, .legal { padding-left: 20px; padding-right: 20px; }
     .top { flex-wrap: wrap; padding-top: 18px; padding-bottom: 14px; }
     .brand strong { font-size: 28px; }
     .menu { width: 100%; justify-content: flex-end; }
     .menu a { font-size: 18px; padding: 8px 10px; }
-    .banner { grid-template-columns: 1fr; gap: 28px; padding-top: 32px; padding-bottom: 40px; }
+    .banner { display: block; min-height: 0; }
+    .hero { max-width: none; margin-left: 0; padding: 36px 20px 12px; }
     .hero h1 { font-size: 34px; }
-    .frame { height: 220px; }
+    .wash {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 42%);
+      mask-image: linear-gradient(180deg, transparent 0%, #000 42%);
+    }
     .foot-inner { flex-direction: column; align-items: flex-start; }
     .foot h2 { font-size: 26px; }
     .foot p, .foot a, .legal { font-size: 18px; }
@@ -157,13 +173,11 @@
   </nav>
 </header>
 <section class="banner">
+  <img class="wash" src="banner.jpg" alt="">
   <div class="hero">
     <h1>Prevention of sexual harassment at the workplace.</h1>
     <a class="btn" href="POSH-Training-Course.html">Start training</a>
   </div>
-  <figure class="frame">
-    <img src="banner.jpg" alt="">
-  </figure>
 </section>
 <footer class="foot">
   <div class="foot-inner">
