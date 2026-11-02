@@ -246,18 +246,25 @@
   .cert-sheet {
     max-width: 980px;
     margin: 8px auto 32px;
-    padding: 46px 54px 36px;
+    padding: 46px 54px 40px;
     background: #fff;
     color: #111;
     text-align: center;
     border: 10px solid #111;
     box-shadow: inset 0 0 0 1px #111, inset 0 0 0 8px #fff, inset 0 0 0 9px #111;
   }
-  .page .cert-sheet p { text-align: center; color: #111; margin: 0; }
-  .cert-kicker { letter-spacing: 0.32em; font-size: 13px; font-weight: 700; margin: 6px 0 0; }
+  .page .cert-sheet h1,
+  .page .cert-sheet p {
+    text-align: center;
+    color: #111;
+    margin-left: 0;
+    margin-right: 0;
+    hyphens: manual;
+  }
+  .cert-kicker { letter-spacing: 0.32em; padding-left: 0.32em; font-size: 13px; font-weight: 700; margin: 6px 0 0; }
   .cert-rule { width: 160px; height: 1px; background: #111; margin: 14px auto; border: 0; }
-  .cert-title { font-family: Georgia, "Palatino Linotype", serif; font-size: 46px; line-height: 1; margin: 4px 0 0; letter-spacing: 0.03em; color: #111; }
-  .cert-lead { margin-top: 26px; font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; }
+  .cert-title { font-family: Georgia, "Palatino Linotype", serif; font-size: 46px; line-height: 1; margin: 4px 0 0; letter-spacing: 0.03em; padding-left: 0.03em; color: #111; }
+  .cert-lead { margin-top: 26px; font-size: 15px; letter-spacing: 0.12em; padding-left: 0.12em; text-transform: uppercase; }
   .cert-name {
     display: inline-block;
     min-width: 320px;
@@ -270,12 +277,11 @@
     line-height: 1.15;
     color: #111;
   }
-  .cert-org { margin-top: 16px; font-size: 22px; letter-spacing: 0.04em; }
-  .cert-state { width: 100%; max-width: none; margin: 22px auto 0; font-size: 16px; line-height: 1.45; text-align: center; }
-  .cert-meta { display: flex; justify-content: center; gap: 72px; margin-top: 28px; }
-  .cert-meta p { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; }
-  .cert-meta strong { display: block; margin-top: 6px; font-size: 16px; letter-spacing: 0.04em; text-transform: none; }
-  .cert-foot { margin-top: 26px; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; }
+  .cert-org { margin-top: 16px; font-size: 22px; letter-spacing: 0.04em; padding-left: 0.04em; }
+  .cert-state { width: 100%; max-width: none; margin: 22px 0 0; font-size: 16px; line-height: 1.45; text-align: center; }
+  .cert-label { margin-top: 22px; font-size: 12px; letter-spacing: 0.14em; padding-left: 0.14em; text-transform: uppercase; }
+  .cert-label strong { display: block; margin-top: 6px; font-size: 16px; letter-spacing: 0.04em; padding-left: 0.04em; text-transform: none; font-weight: 700; }
+  .cert-foot { margin-top: 28px; font-size: 12px; letter-spacing: 0.16em; padding-left: 0.16em; text-transform: uppercase; }
   .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 22px; max-width: 860px; }
   .field label { margin: 0 0 6px; }
   .field input { max-width: none; }
@@ -764,8 +770,8 @@ function certificateMarkup(c) {
     + '<p class="cert-name">' + esc(c.name) + "</p>"
     + '<p class="cert-org">' + esc(c.org) + "</p>"
     + '<p class="cert-state">has successfully completed the course on Prevention of Sexual Harassment (POSH) at the Workplace.</p>'
-    + '<div class="cert-meta"><p>Date of completion<strong>' + esc(niceDate(c.iso)) + "</strong></p>"
-    + "<p>Certificate number<strong>" + esc(c.id) + "</strong></p></div>"
+    + '<p class="cert-label">Date of completion<strong>' + esc(niceDate(c.iso)) + "</strong></p>"
+    + '<p class="cert-label">Certificate number<strong>' + esc(c.id) + "</strong></p>"
     + '<p class="cert-foot">Prevention of sexual harassment at the workplace</p>'
     + "</div>";
 }
@@ -784,19 +790,32 @@ function buildPdf(c) {
   const nameSize = Math.max(18, Math.min(32, 620 / Math.max(c.name.length, 1) * 1.8));
   const orgSize = Math.max(12, Math.min(16, 640 / Math.max(c.org.length, 1) * 1.5));
   const dateText = niceDate(c.iso);
-  function width(text, size, track) {
+  const timesWx = {
+    F1: [250,333,408,500,500,833,778,333,333,333,500,564,250,333,250,278,500,500,500,500,500,500,500,500,500,500,278,278,564,564,564,444,921,722,667,667,722,611,556,722,722,333,389,722,611,889,722,722,556,722,667,556,611,722,722,944,722,722,611,333,278,333,469,500,333,444,500,444,500,444,333,500,500,278,278,500,278,778,500,500,500,500,333,389,278,500,500,722,500,500,444,480,200,480,541],
+    F2: [250,333,555,500,500,1000,833,333,333,333,500,570,250,333,250,278,500,500,500,500,500,500,500,500,500,500,333,333,570,570,570,500,930,722,667,722,722,667,611,778,778,389,500,778,667,944,722,778,611,778,722,556,667,722,722,1000,722,722,667,333,278,333,581,500,333,500,556,444,556,444,333,500,556,278,333,556,278,833,556,500,556,556,444,389,333,556,500,722,500,500,444,394,220,394,520],
+    F3: [250,333,420,500,500,833,778,333,333,333,500,675,250,333,250,278,500,500,500,500,500,500,500,500,500,500,333,333,675,675,675,500,920,611,611,667,722,611,611,722,722,333,444,667,556,833,667,722,611,722,611,500,556,722,611,833,611,556,556,389,278,389,422,500,333,500,500,444,500,444,278,500,500,278,278,444,278,722,500,500,500,500,389,389,278,500,444,667,444,444,389,400,275,400,541]
+  };
+  function width(font, text, size, track) {
+    const table = timesWx[font] || timesWx.F1;
     const gap = track || 0;
-    return text.length * size * 0.47 + Math.max(0, text.length - 1) * gap;
+    let w = 0;
+    for (let i = 0; i < text.length; i++) {
+      const code = text.charCodeAt(i);
+      const wx = code >= 32 && code <= 126 ? table[code - 32] : 500;
+      w += (wx / 1000) * size;
+      if (i < text.length - 1) w += gap;
+    }
+    return w;
   }
   function draw(font, size, y, text, track) {
     const tc = track || 0;
-    const x = (pageW - width(text, size, tc)) / 2;
+    const x = (pageW - width(font, text, size, tc)) / 2;
     return "BT /" + font + " " + size.toFixed(1) + " Tf " + tc.toFixed(2) + " Tc 0 0 0 rg 1 0 0 1 " + x.toFixed(1) + " " + y.toFixed(1) + " Tm (" + pdfEscape(text) + ") Tj ET";
   }
   function rule(x1, x2, y) {
     return "0.8 w 0 0 0 RG " + x1 + " " + y + " m " + x2 + " " + y + " l S";
   }
-  const nameW = Math.max(240, width(c.name, nameSize, 0) + 36);
+  const nameW = Math.max(240, width("F3", c.name, nameSize, 0) + 36);
   const stream = [
     "1 1 1 rg 0 0 842 595 re f",
     "5 w 0 0 0 RG 22 22 798 551 re S",
