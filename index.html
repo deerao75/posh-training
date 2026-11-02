@@ -60,6 +60,17 @@
     padding: 10px 16px;
   }
   .menu a:hover { color: var(--gold-2); }
+  .menu button {
+    background: #111;
+    color: #fff;
+    border: 0;
+    font: inherit;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 8px 14px;
+    cursor: pointer;
+  }
+  .menu button[hidden] { display: none; }
   .banner {
     position: relative;
     flex: 1 0 auto;
@@ -148,6 +159,7 @@
   <nav class="menu" aria-label="Page">
     <a href="POSH-Training-Course.html">Start Training</a>
     <a id="registerLink" href="POSH-Training-Course.html#register">Register</a>
+    <button id="logoutLink" type="button" hidden>Log out</button>
   </nav>
 </header>
 <section class="banner">
@@ -166,10 +178,25 @@
   try {
     var db = JSON.parse(localStorage.getItem("posh-db-v1") || "null");
     var loggedIn = db && db.sessionId && db.people && db.people.some(function (p) { return p.id === db.sessionId; });
+    var logout = document.getElementById("logoutLink");
     if (loggedIn) {
       link.textContent = "Logged In";
       link.setAttribute("href", "POSH-Training-Course.html");
+      logout.hidden = false;
     }
+    logout.onclick = function () {
+      try {
+        var current = JSON.parse(localStorage.getItem("posh-db-v1") || "null");
+        if (current) {
+          current.sessionId = null;
+          localStorage.setItem("posh-db-v1", JSON.stringify(current));
+        }
+      } catch (err) {}
+      try { sessionStorage.removeItem("posh-cert-live"); } catch (err2) {}
+      link.textContent = "Register";
+      link.setAttribute("href", "POSH-Training-Course.html#register");
+      logout.hidden = true;
+    };
   } catch (e) {}
 })();
 </script>

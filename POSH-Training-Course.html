@@ -457,9 +457,7 @@ function renderSession() {
   bar.hidden = false;
   document.getElementById("loggedName").textContent = person.name;
   document.getElementById("loggedOrg").textContent = person.org;
-  const out = document.getElementById("logoutBtn");
-  const cert = attempt().cert;
-  out.hidden = !(cert && cert.downloaded);
+  document.getElementById("logoutBtn").hidden = false;
 }
 
 function shell(html) {
@@ -731,8 +729,7 @@ function downloadCertificate() {
 }
 
 function logOut() {
-  const cert = sessionPerson() && attempt().cert;
-  if (!(cert && cert.downloaded)) return;
+  if (!sessionPerson()) return;
   db.sessionId = null;
   sessionStorage.removeItem("posh-cert-live");
   saveDb();
