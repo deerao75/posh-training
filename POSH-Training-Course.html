@@ -321,6 +321,7 @@
 <div class="app">
   <aside class="side">
     <p class="brand"><span>PREVENTION OF SEXUAL HARASSMENT</span>POSH Training Centre</p>
+    <a class="nav-btn" href="index.html"><span class="n">H</span><span>Home<small>Landing page</small></span></a>
     <div class="progress-label" id="progressLabel">0 of 15 topics passed</div>
     <div class="bar"><i id="progressBar"></i></div>
     <div id="topicNav"></div>
@@ -409,7 +410,7 @@ function shuffle(list) {
 }
 
 function pickQuestions(topic) {
-  return topic.questions.map((q, i) => ({
+  return topic.questions.slice(0, 4).map((q, i) => ({
     id: topic.n + "-" + i,
     q: q.q,
     why: q.why,
@@ -538,15 +539,13 @@ function saveEmployee(ev) {
 
 function topicHtml(n) {
   const t = COURSE.topics.find((x) => x.n === n);
-  const total = t.questions.length;
   const cleared = attempt().cleared && attempt().cleared[n];
   const cards = t.cards.map((c) => '<div class="card"><h3>' + esc(c.h) + "</h3><p>" + esc(c.p) + "</p></div>").join("");
   const left = t.left.map((x) => "<li>" + esc(x) + "</li>").join("");
   const right = t.right.map((x) => "<li>" + esc(x) + "</li>").join("");
   const reads = t.caseRead.map((x) => '<div class="read">' + esc(x) + "</div>").join("");
-  const status = "Answer all " + total + " questions. Every answer has to be correct before the next topic opens.";
-  let actions = '<button class="btn gold" id="startTest" type="button" data-n="' + n + '">' + (cleared ? "Answer the questions again" : "Answer the questions") + "</button>";
-  if (n < 15) actions += nextButton(n);
+  const status = "There are four questions. Score the topic whatever the answers are. The correct answers are shown on the score screen. Take the test again until all four are correct. Only then do the next topic's questions open.";
+  const actions = '<button class="btn gold" id="startTest" type="button" data-n="' + n + '">' + (cleared ? "Take the test again" : "Answer the questions") + "</button>";
   return '<section class="block">'
     + '<p class="kicker">TOPIC ' + String(n).padStart(2, "0") + " OF 15</p>"
     + "<h1>" + esc(t.title) + "</h1>"
@@ -624,41 +623,49 @@ function quizHtml() {
     }
     return '<div class="q-card"><p class="kicker">QUESTION ' + (qi + 1) + " OF " + total + "</p><h2>" + esc(item.q) + "</h2>" + opts + mark + "</div>";
   }).join("");
-  const ready = quiz.items.every((item) => item.choice !== null);
   return '<p class="kicker">TOPIC ' + String(t.n).padStart(2, "0") + "  ·  QUESTIONS</p>"
     + "<h1>" + esc(t.short) + "</h1>"
-    + "<p class=\"lead\">Select one choice on each question. It is marked straight away. All " + total + " answers have to be correct.</p>"
+    + "<p class=\"lead\">Select one choice on each question. Score this topic whatever the answers are. The correct answers stay on the score screen.</p>"
     + blocks
-    + '<div class="actions"><button class="btn gold" id="submitTest" type="button"' + (ready ? "" : " disabled") + ">Score this topic</button></div>";
+    + '<div class="actions"><button class="btn gold" id="submitTest" type="button">Score this topic</button></div>';
 }
 
 function submitQuiz() {
   const items = quiz.items;
   const total = items.length;
+  const n = quiz.n;
   let score = 0;
   items.forEach((item) => {
-    if (item.options[item.choice] && item.options[item.choice].correct) score += 1;
+    if (item.choice !== null && item.options[item.choice].correct) score += 1;
   });
-  const perfect = score === total;
+  const perfect = score === total && total === 4;
   const a = attempt();
-  if (perfect) a.cleared[quiz.n] = true;
-  else delete a.cleared[quiz.n];
   const debrief = items.map((item) => {
     const correct = item.options.find((o) => o.correct);
-    return { q: item.q, correct: correct.text, why: item.why, ok: item.options[item.choice].correct };
+    const ok = item.choice !== null && item.options[item.choice].correct;
+    return { q: item.q, correct: correct.text, why: item.why, ok: ok };
   });
-  if (perfect && quiz.n === 15) {
-    a.finished = true;
-    sessionStorage.setItem("posh-cert-live", db.sessionId);
+  if (perfect) {
+    a.cleared[n] = true;
+    if (n === 15) {
+      a.finished = true;
+      sessionStorage.setItem("posh-cert-live", db.sessionId);
+      saveDb();
+      quiz = null;
+      view = { name: "cert" };
+      render();
+      window.scrollTo(0, 0);
+      return;
+    }
+    a.at = n + 1;
     saveDb();
     quiz = null;
-    view = { name: "cert" };
-    render();
-    window.scrollTo(0, 0);
+    startQuiz(n + 1);
     return;
   }
+  delete a.cleared[n];
   saveDb();
-  view = { name: "result", n: quiz.n, score: score, total: total, perfect: perfect, debrief: debrief };
+  view = { name: "result", n: n, score: score, total: total, perfect: false, debrief: debrief };
   quiz = null;
   render();
   window.scrollTo(0, 0);
@@ -667,21 +674,12 @@ function submitQuiz() {
 function resultHtml() {
   const t = COURSE.topics.find((x) => x.n === view.n);
   const rows = view.debrief.map((d) => '<div class="why"><strong>' + esc(d.q) + '</strong><p class="mark ' + (d.ok ? "ok" : "no") + '">' + (d.ok ? "Right." : "Wrong.") + ' Correct answer: <span class="answer">' + esc(d.correct) + "</span></p><p>" + esc(d.why) + "</p></div>").join("");
-  if (!view.perfect) {
-    return '<p class="kicker">TOPIC ' + String(t.n).padStart(2, "0") + "  ·  SCORE</p>"
-      + '<p class="score fail">' + view.score + " / " + view.total + "</p>"
-      + "<h1>Every answer has to be correct.</h1>"
-      + '<p class="lead">You scored ' + view.score + " out of " + view.total + ". The next topic stays closed until every question on this topic is answered correctly. Read the topic again, then answer the full set once more.</p>"
-      + rows
-      + '<div class="actions"><button class="btn gold" id="nextTopic" type="button" disabled>Next topic</button>'
-      + '<button class="btn" id="startTest" type="button" data-n="' + t.n + '">Answer the questions again</button></div>';
-  }
-  return '<p class="kicker">TOPIC ' + String(t.n).padStart(2, "0") + "  ·  PASSED</p>"
-    + '<p class="score pass">' + view.score + " / " + view.total + "</p>"
-    + "<h1>Every answer is correct.</h1>"
-    + '<p class="lead">You can move to the next topic.</p>'
+  return '<p class="kicker">TOPIC ' + String(t.n).padStart(2, "0") + "  ·  SCORE</p>"
+    + '<p class="score fail">' + view.score + " / " + view.total + "</p>"
+    + "<h1>Take the test again.</h1>"
+    + '<p class="lead">You scored ' + view.score + " out of " + view.total + ". The correct answers are shown below. The next topic's questions open only when all four answers are correct.</p>"
     + rows
-    + '<div class="actions">' + nextButton(t.n) + "</div>";
+    + '<div class="actions"><button class="btn gold" id="startTest" type="button" data-n="' + t.n + '">Take the test again</button></div>';
 }
 
 function draftCert() {
