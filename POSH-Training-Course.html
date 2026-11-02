@@ -271,7 +271,7 @@
     color: #111;
   }
   .cert-org { margin-top: 16px; font-size: 22px; letter-spacing: 0.04em; }
-  .cert-state { max-width: 620px; margin: 22px auto 0; font-size: 17px; line-height: 1.55; }
+  .cert-state { width: 100%; max-width: none; margin: 22px auto 0; font-size: 16px; line-height: 1.45; text-align: center; }
   .cert-meta { display: flex; justify-content: center; gap: 72px; margin-top: 28px; }
   .cert-meta p { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; }
   .cert-meta strong { display: block; margin-top: 6px; font-size: 16px; letter-spacing: 0.04em; text-transform: none; }
@@ -692,7 +692,7 @@ function draftCert() {
     name: person.name,
     org: person.org,
     iso: useIso,
-    id: certId(person.name, person.employeeId, useIso)
+    id: (stored && stored.id) ? stored.id : certId(useIso)
   };
 }
 
@@ -725,6 +725,7 @@ function downloadCertificate() {
   a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   attempt().cert = { name: c.name, org: c.org, iso: c.iso, id: c.id, downloaded: true };
+  db.nextSerial = (db.nextSerial || 1) + 1;
   saveDb();
   render();
 }
@@ -741,11 +742,13 @@ function logOut() {
   window.scrollTo(0, 0);
 }
 
-function certId(name, employeeId, iso) {
-  const s = (name + "|" + employeeId + "|" + iso).toUpperCase();
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = (h * 33 + s.charCodeAt(i)) >>> 0;
-  return "POSH-" + iso.replace(/-/g, "") + "-" + h.toString(16).toUpperCase().padStart(4, "0").slice(-4);
+function serialSuffix(n) {
+  const width = Math.max(3, String(n).length);
+  return "A" + String(n).padStart(width, "0");
+}
+
+function certId(iso) {
+  return "POSH-" + iso.replace(/-/g, "") + "-" + serialSuffix(db.nextSerial || 1);
 }
 
 function niceDate(iso) {
@@ -763,7 +766,7 @@ function certificateMarkup(c) {
     + '<p class="cert-lead">This is to certify that</p>'
     + '<p class="cert-name">' + esc(c.name) + "</p>"
     + '<p class="cert-org">' + esc(c.org) + "</p>"
-    + '<p class="cert-state">has completed the POSH course and has successfully answered all the questions.</p>'
+    + '<p class="cert-state">has successfully completed the course on Prevention of Sexual Harassment (POSH) at the Workplace.</p>'
     + '<div class="cert-meta"><p>Date of completion<strong>' + esc(niceDate(c.iso)) + "</strong></p>"
     + "<p>Certificate number<strong>" + esc(c.id) + "</strong></p></div>"
     + '<p class="cert-foot">Prevention of sexual harassment at the workplace</p>'
@@ -779,7 +782,7 @@ function pdfEscape(s) {
 
 function buildPdf(c) {
   const pageW = 842;
-  const line = "has completed the POSH course and has successfully answered all the questions.";
+  const line = "has successfully completed the course on Prevention of Sexual Harassment (POSH) at the Workplace.";
   const foot = "Prevention of sexual harassment at the workplace";
   const nameSize = Math.max(18, Math.min(32, 620 / Math.max(c.name.length, 1) * 1.8));
   const orgSize = Math.max(12, Math.min(16, 640 / Math.max(c.org.length, 1) * 1.5));

@@ -147,7 +147,7 @@
   </a>
   <nav class="menu" aria-label="Page">
     <a href="POSH-Training-Course.html">Start Training</a>
-    <a href="POSH-Training-Course.html#register">Register</a>
+    <a id="registerLink" href="POSH-Training-Course.html#register">Register</a>
   </nav>
 </header>
 <section class="banner">
@@ -160,5 +160,18 @@
 <footer class="foot">
   <p class="legal">Training material, not legal advice.</p>
 </footer>
+<script>
+(function () {
+  var link = document.getElementById("registerLink");
+  try {
+    var db = JSON.parse(localStorage.getItem("posh-db-v1") || "null");
+    var loggedIn = db && db.sessionId && db.people && db.people.some(function (p) { return p.id === db.sessionId; });
+    if (loggedIn) {
+      link.textContent = "Logged In";
+      link.setAttribute("href", "POSH-Training-Course.html");
+    }
+  } catch (e) {}
+})();
+</script>
 </body>
 </html>
